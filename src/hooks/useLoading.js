@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
+import CircleLoader from "react-spinners/CircleLoader";
 
 const override = css`
   display: flex;
@@ -12,7 +12,7 @@ const override = css`
 `;
 
 const useLoading = () => {
-  return <ClimbingBoxLoader color="#20312d" css={override} size={30} />;
+  return <CircleLoader color="#2E8DF1" css={override} size={60} />;
 };
 
 export default useLoading;
