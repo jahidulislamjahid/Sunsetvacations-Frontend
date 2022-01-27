@@ -14,7 +14,7 @@ const NotFound = () => {
       <div className="text-center my-5">
         <h1 style={{ fontSize: "100px", color: "red" }}>404</h1>
         <h4 className="text-white">OPPS! PAGE NOT FOUND</h4>
-        <p className="text-muted">
+        <p className="text-white">
           Sorry, the page you're looking for doesn't exist. you can return to
           home and look for another.
         </p>

@@ -24,7 +24,7 @@ const AddReview = () => {
       confirmButtonText: "Yes",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch("https://sheltered-dusk-34885.herokuapp.com/addReview", {
+        fetch("https://morning-refuge-85756.herokuapp.com/addReview", {
           method: "post",
           headers: { "content-type": "application/json" },
           body: JSON.stringify(data),

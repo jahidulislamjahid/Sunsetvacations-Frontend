@@ -1,5 +1,5 @@
 import React from "react";
-import { Accordion, Button, Col, Container, FormControl, InputGroup, Row, Spinner } from "react-bootstrap";
+import { Button, Col, Container, FormControl, InputGroup, Row, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Product from "../components/Product.js";
 import Slider from "../components/Slider.js";
@@ -14,7 +14,7 @@ import faq from '../assets/images/faq.jpg'
 import Testimonials from "../components/Testimonials.js";
 import useContexts from "../hooks/useContexts.js";
 const Home = () => {
-  const { email, logout, loading, photoURL, displayName } = useContexts();
+  const { email } = useContexts();
   const products = useProducts();
   const goPost = () => {
     window.location.href='/dashboard/addProduct'

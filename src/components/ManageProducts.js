@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 const ManageProducts = () => {
   const [products, setProducts] = useState([]);
   useEffect(() => {
-    fetch("https://sheltered-dusk-34885.herokuapp.com/products")
+    fetch("https://morning-refuge-85756.herokuapp.com/products")
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
@@ -29,7 +29,7 @@ const ManageProducts = () => {
       confirmButtonText: "Yes",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`https://sheltered-dusk-34885.herokuapp.com/deleteProduct/${id}`, {
+        fetch(`https://morning-refuge-85756.herokuapp.com/deleteProduct/${id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())

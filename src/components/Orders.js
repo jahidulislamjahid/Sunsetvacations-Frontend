@@ -9,7 +9,7 @@ const Orders = () => {
   console.log(orders);
 
   useEffect(() => {
-    fetch(`https://sheltered-dusk-34885.herokuapp.com/orders`)
+    fetch(`https://morning-refuge-85756.herokuapp.com/orders`)
       .then((res) => res.json())
       .then((data) => {
         setOrders(data);
@@ -29,7 +29,7 @@ const Orders = () => {
     setOrders(modifiedOrders);
     const modifiedStatus = { id, status };
 
-    fetch("https://sheltered-dusk-34885.herokuapp.com/updateOrderStatus", {
+    fetch("https://morning-refuge-85756.herokuapp.com/updateOrderStatus", {
       method: "put",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(modifiedStatus),
@@ -52,7 +52,7 @@ const Orders = () => {
       confirmButtonText: "Yes",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`https://sheltered-dusk-34885.herokuapp.com/placeorder/${id}`, {
+        fetch(`https://morning-refuge-85756.herokuapp.com/placeorder/${id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())

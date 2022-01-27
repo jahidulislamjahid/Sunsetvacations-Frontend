@@ -34,7 +34,7 @@ const Product = ({ product }) => {
             </Card.Text>
             <Card.Text>Total Review: {totalReview}</Card.Text>
             <Link to={`/placeorder/${_id}`}>
-              <button className="btn mt-2 btn-primary">Buy Now</button>
+              <button className="btn mt-2 btn-primary">View Post</button>
             </Link>
           </Card.Body>
         </Card>

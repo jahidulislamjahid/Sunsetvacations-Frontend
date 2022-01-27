@@ -19,7 +19,7 @@ const UpdateProduct = () => {
   const [product, setProduct] = useState({});
 
   useEffect(() => {
-    fetch(`https://sheltered-dusk-34885.herokuapp.com/updateOne/${id}`)
+    fetch(`https://morning-refuge-85756.herokuapp.com/updateOne/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setProduct(data);
@@ -37,7 +37,7 @@ const UpdateProduct = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `https://sheltered-dusk-34885.herokuapp.com/updateProduct?id=${id}`,
+          `https://morning-refuge-85756.herokuapp.com/updateProduct?id=${id}`,
           {
             method: "put",
             headers: { "content-type": "application/json" },
