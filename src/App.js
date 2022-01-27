@@ -1,71 +1,57 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Dashboard from "./admin/Dashboard";
-import ExploreDrones from "./components/ExploreDrones/ExploreDrones";
-import AuthProvider from "./contexts/AuthProvider";
-import BookingProvider from "./contexts/BookingProvider";
-import useLoading from "./hooks/useLoading";
-import PrivateRoute from "./routes/PrivateRoute";
-import BookingScreen from "./screens/BookingScreen";
-import Error from "./screens/Error";
-import HomeScreen from "./screens/HomeScreen";
-import MyBookingScreen from "./screens/MyBookingScreen";
-import RegisterScreen from "./screens/RegisterScreen";
-import SignInScreen from "./screens/SignInScreen";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import "./assets/css/main.css";
+import Footer from "./components/Footer.js";
+import ContextProvider from "./contexts/ContextProvider.js";
+import Home from "./pages/Home.js";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Login from "./pages/Login.js";
+import Register from "./pages/Register.js";
+import Dashboard from "./pages/Dashboard.js";
+import PrivateRoute from "./protectedRoute/PrivateRoute.js";
+import Products from "./components/Products.js";
+import PlaceOrder from "./pages/PlaceOrder.js";
+import PageNotFound from "./pages/PageNotFound.js";
+import Header from "./components/Header.js";
+import Contact from "./components/Contact";
 
-const App = () => {
-  const [loading, setLoading] = useState(true);
-  const spinner = useLoading();
-
-  //loading
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-  }, []);
-
+function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <BookingProvider>
-          {loading ? (
-            spinner
-          ) : (
-            <Switch>
-              <Route exact path="/">
-                <HomeScreen />
-              </Route>
-              <Route exact path="/home">
-                <HomeScreen />
-              </Route>
-              <Route path="/register">
-                <RegisterScreen />
-              </Route>
-              <Route path="/login">
-                <SignInScreen />
-              </Route>
-              <Route path="/explore">
-                <ExploreDrones />
-              </Route>
-              <PrivateRoute exact path="/dashboard">
-                <Dashboard />
-              </PrivateRoute>
-              <PrivateRoute exact path="/booking/:id">
-                <BookingScreen />
-              </PrivateRoute>
-              <PrivateRoute exact path="/my-bookings">
-                <MyBookingScreen />
-              </PrivateRoute>
-              <Route exact path="*">
-                <Error></Error>
-              </Route>
-            </Switch>
-          )}
-        </BookingProvider>
-      </AuthProvider>
-    </BrowserRouter>
+    <ContextProvider>
+      <Router>
+        <Header />
+        <Switch>
+          <Route exact path="/">
+            <Home></Home>
+          </Route>
+          <Route exact path="/home">
+            <Home></Home>
+          </Route>
+          <PrivateRoute path="/dashboard">
+            <Dashboard></Dashboard>
+          </PrivateRoute>
+          <Route path="/login">
+            <Login></Login>
+          </Route>
+          <Route path="/register">
+            <Register></Register>
+          </Route>
+          <Route path="/products">
+            <Products></Products>
+          </Route>
+          <Route path="/contact">
+            <Contact></Contact>
+          </Route>
+          <PrivateRoute path="/placeorder/:id">
+            <PlaceOrder></PlaceOrder>
+          </PrivateRoute>
+          <Route path="*">
+            <PageNotFound></PageNotFound>
+          </Route>
+        </Switch>
+        <Footer />
+      </Router>
+    </ContextProvider>
   );
-};
+}
 
 export default App;

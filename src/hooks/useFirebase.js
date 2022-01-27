@@ -1,30 +1,108 @@
+import firebaseInIt from "../firebase/firebase.init.js";
 import {
   getAuth,
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithPopup,
-  signOut,
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
+  signOut,
   updateProfile,
+  signInWithPopup,
+  GoogleAuthProvider,
 } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import swal from "sweetalert";
-import initAuthentication from "../config/firebase";
-
-// initialize firebase
-initAuthentication();
-
+import Swal from "sweetalert2";
+firebaseInIt();
+const auth = getAuth();
 const useFirebase = () => {
   const [user, setUser] = useState({});
-  const history = useHistory();
-  const auth = getAuth();
-  const [isLoading, setIsLoading] = useState(true);
-  const [admin, setAdmin] = useState(false);
-  const currentUser = auth.currentUser;
+  const [loading, setLoading] = useState(true);
 
-  //on State Change
+  const signInUsingGoogle = ({ history, redirect }) => {
+    setLoading(true);
+    const googleProvider = new GoogleAuthProvider();
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Successfully Logged in!!",
+          text: "Have a fun!",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        setUser(result.user);
+        history.replace(redirect);
+        saveUser(user.email, user.displayName, "POST");
+      })
+      .catch((err) => {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Oops..",
+          text: `${err.message}`,
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      })
+      .finally(() => setLoading(false));
+  }
+
+
+  //register
+  function UserRegister(newUserData, history) {
+    const { name, email, password } = newUserData;
+    setLoading(true);
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        setUserName(name);
+        addUserToDB(name, email);
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Successfully Registered",
+          text: "Have a fun!",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        setUser(result.user);
+        saveUser(name, email, "PUT");
+        history.replace("/");
+      })
+      .catch((err) => {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Oops..",
+          text: `${err.message}`,
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      })
+      .finally(() => setLoading(false));
+  }
+
+  // add user to db
+  function addUserToDB(name, email) {
+    fetch("https://sheltered-dusk-34885.herokuapp.com/users", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ name, email }),
+    })
+      .then((res) => res.json())
+      .then((data) => { });
+  }
+
+  // set username
+  function setUserName(name) {
+    updateProfile(auth.currentUser, {
+      displayName: name,
+    })
+      .then(() => { })
+      .catch((error) => { });
+  }
+
+  // Get the currently signed-in user
+
   useEffect(() => {
     const unsubscribed = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -32,112 +110,82 @@ const useFirebase = () => {
       } else {
         setUser({});
       }
-      setIsLoading(false);
+      setLoading(false);
     });
     return () => unsubscribed;
-  }, [auth]);
+  }, []);
 
-  //sign up functionality
-  const signUpUser = ({ email, name, password, photoURL }) => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((res) => {
-        setUser(res.user);
-        saveUser(email, name, photoURL, "POST");
-        updateProfile(auth.currentUser, {
-          displayName: name,
-          photoURL: photoURL,
-        }).then(() => {
-          swal(
-            "Welcome!",
-            `let's explore your favorite products ${res.user.displayName}`,
-            "success"
-          );
-          history.push("/");
-        });
-      })
-      .catch((err) => swal("Something went wrong!", `${err.message}`, "error"));
-  };
-
-  //sign in functionality
-  const signInUser = ({ email, password }) => {
+  // login
+  function userLogin({ email, password, history, redirect }) {
+    setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
-      .then((res) => {
-        setUser(res.user);
-        swal(
-          "Sign in Successful!",
-          `Welcome back ${res.user.displayName}`,
-          "success"
-        );
-        history.push("/");
-      })
-      .catch((err) => swal("Something went wrong!", `${err.message}`, "error"));
-  };
-
-  //google sign in
-  const handleGoogleSignIn = () => {
-    setIsLoading(true);
-    const googleProvider = new GoogleAuthProvider();
-    signInWithPopup(auth, googleProvider)
       .then((result) => {
-        const user = result.user;
-        setUser(user);
-        saveUser(user.email, user.displayName, user.photoURL, "PUT");
-        // console.log(user);
-        swal("Welcome!", "Account has been created!", "success");
-        history.push("/");
-      })
-      .catch((error) => {
-        swal("Something went wrong!", `${error.message}`, "error");
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
-
-  // admin data load
-  useEffect(() => {
-    fetch(`https://obscure-chamber-14380.herokuapp.com/users/${user.email}`)
-      .then((res) => res.json())
-      .then((data) => setAdmin(data.admin));
-  }, [user.email]);
-
-  //Sign out
-  const signOutUser = () => {
-    setIsLoading(true);
-    signOut(auth)
-      .then(() => {
-        setUser({});
-        swal("Logout Successful!", "You are logged out!", "success");
-        history.push("/register");
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Successfully Logged in!!",
+          text: "Have a fun!",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        setUser(result.user);
+        history.replace(redirect);
       })
       .catch((err) => {
-        swal("Something went wrong!", `${err.message}`, "error");
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Oops..",
+          text: `${err.message}`,
+          showConfirmButton: false,
+          timer: 2000,
+        });
       })
-      .finally(() => setIsLoading(false));
-  };
-  //   console.log(user);
-  // save user
-  const saveUser = (email, displayName, photoURL, method) => {
-    const user = { email, displayName, photoURL };
-    fetch("https://obscure-chamber-14380.herokuapp.com/users", {
+      .finally(() => setLoading(false));
+  }
+
+  // logout
+  function logout() {
+    setLoading(true);
+    signOut(auth)
+      .then(() => {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Successfully Logged out!",
+          text: "Have a fun!",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        setUser({});
+      })
+      .catch((err) => {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Oops..",
+          text: `${err.message}`,
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      })
+      .finally(() => setLoading(false));
+  }
+
+  //add user to db(2)
+  const saveUser = (email, name, method) => {
+    const user = { email, name };
+    fetch("https://sheltered-dusk-34885.herokuapp.com/users", {
       method: method,
       headers: {
         "content-type": "application/json",
+        body: JSON.stringify({ user }),
       },
       body: JSON.stringify(user),
     }).then();
   };
 
-  return {
-    currentUser,
-    user,
-    admin,
-    signUpUser,
-    signInUser,
-    handleGoogleSignIn,
-    signOutUser,
-    isLoading,
-  };
+  return { UserRegister, ...user, loading, userLogin, logout, signInUsingGoogle };
 };
 
 export default useFirebase;
